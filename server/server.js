@@ -11,6 +11,17 @@ var io = socketIO(server);
 
 io.on('connection', (socket) => {
     console.log('User connected');
+
+
+    socket.on('createMessage', (message) => {
+        console.log(message);
+        io.emit('newMessage', {
+            message,
+            createdAt: 1234
+        });
+    });
+ 
+    
     socket.on('disconnect', () => {
         console.log('A user disconnected');
     });
