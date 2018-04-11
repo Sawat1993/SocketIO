@@ -12,20 +12,21 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 io.on('connection', (socket) => {
-    console.log('User connected');
 
     socket.emit('newMessage', generateMessage('Admin', 'Welcome Man'));
 
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'One member joined'))
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log(message);
-        socket.broadcast.emit('newMessage', generateMessage(message.from, message.text));
+        io.emit('newMessage', generateMessage(message.from, message.text));
+
+        callback('recived');
     });
 
 
     socket.on('disconnect', () => {
-        console.log('A user disconnected');
+        io.emit('newMessage', generateMessage('Admin', 'One member disconnected'));
     });
 })
 
