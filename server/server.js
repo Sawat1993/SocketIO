@@ -24,6 +24,10 @@ io.on('connection', (socket) => {
         callback('recived');
     });
 
+    socket.on('createLocationMessage',(message) => {
+        io.emit('newMessage', generateMessage(message.from, `Latitude: ${message.latitude}  Longitude ${message.longitude}`),)
+    })
+
 
     socket.on('disconnect', () => {
         io.emit('newMessage', generateMessage('Admin', 'One member disconnected'));
