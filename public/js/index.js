@@ -44,15 +44,15 @@ locationButton.on('click', function () {
         return alert('Unable to fetch Location');
     }
 
-    locationButton.attr('disabled','disabled')
+    locationButton.attr('disabled','disabled').text('Sending Location....');
     navigator.geolocation.getCurrentPosition(function (position) {
-        locationButton.removeAttr('disabled');
+        locationButton.removeAttr('disabled').text('Send Location');
         socket.emit('createLocationMessage', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         })
     }, function () {
-        locationButton.removeAttr('disabled');
+        locationButton.removeAttr('disabled').text('Send Location');;
         return alert('Error in fetching location');
     })
 })
