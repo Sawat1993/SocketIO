@@ -19,13 +19,13 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message, callback) => {
         console.log(message);
-        io.emit('newMessage', generateMessage(message.from, message.text));
+        io.emit('newMessage', generateMessage(message.createdBy, message.text));
 
         callback('recived');
     });
 
     socket.on('createLocationMessage',(message) => {
-        io.emit('newLocationMessage', generateLocationMessage(message.from, message.latitude, message.longitude))
+        io.emit('newLocationMessage', generateLocationMessage(message.createdBy, message.latitude, message.longitude))
     });
 
 

@@ -7,19 +7,24 @@ socket.on('connect', function () {
 
 socket.on('newMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    var li = jQuery('<li></li>');
-    li.text(`${message.from} (${formattedTime}): ${message.text}`);
-    jQuery('#messages').append(li);
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
+    jQuery('#messages').append(html);
 });
 
 socket.on('newLocationMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    var li = jQuery('<li></li>');
-    li.text(`${message.from} (${formattedTime}): `);
-    var a = jQuery('<a target="_blank">My current location</a>');
-    a.attr('href',message.url);
-    li.append(a);
-    jQuery('#messages').append(li);
+    var template = jQuery('#location-message-template').html();
+    var html = Mustache.render(template, {
+        url: message.url,
+        from: message.from,
+        createdAt: formattedTime
+    });
+    jQuery('#messages').append(html);
 });
 
 socket.on('disconnect', function () {
@@ -46,10 +51,11 @@ locationButton.on('click', function () {
         return alert('Unable to fetch Location');
     }
 
-    locationButton.attr('disabled','disabled').text('Sending Location....');
+    locationButton.attr('disabled', 'disabled').text('Sending Location....');
     navigator.geolocation.getCurrentPosition(function (position) {
         locationButton.removeAttr('disabled').text('Send Location');
         socket.emit('createLocationMessage', {
+            createdBy: 'User',
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         })
