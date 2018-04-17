@@ -17,6 +17,15 @@ if(clientHeight + scrollTop + newMessageHeight +lastMessageHeight >= scrollHeigh
 socket.on('connect', function () {
     console.log('connected');
 
+    var param = jQuery.deparam(window.location.search);
+    socket.emit('join', param, function(err){
+        if(err){
+            window.location.href = '/';
+            return alert(err);
+        }
+        console.log('Entered room');
+    })
+
 });
 
 socket.on('newMessage', function (message) {
@@ -41,6 +50,16 @@ socket.on('newLocationMessage', function (message) {
     });
     jQuery('#messages').append(html);
     scrollToBottom();
+});
+
+socket.on('updateUserList', function(users) {
+    var ol = jQuery('<ol></ol>');
+
+    users.forEach(function(user) {
+        ol.append(jQuery('<li></li>').text(user));
+    });
+
+    jQuery('#users').html(ol);
 });
 
 socket.on('disconnect', function () {
